@@ -6,37 +6,39 @@ const email = 'hello@dataisland.co';
 ---
 
 <Layout>
-	<main class="flex min-h-svh items-center justify-center px-6">
-		<!-- Wrapper uses the title's font size so 1ch = one title character -->
-		<div class="hero w-fit text-5xl sm:text-8xl lg:text-9xl">
-			<h1 class="font-bold tracking-tight">
-				Data <span class="text-accent">Island</span>
-			</h1>
+	<main class="flex justify-center px-6 lg:pr-[20vw]">
+		<!-- One column shared by the title, sentence and email, so they all line up with the D.
+		     Rows: flexible space / hero / flexible space with the email at the bottom,
+		     which keeps the hero vertically centred.
+		     On large screens the extra right padding on <main> shifts the column left of centre. -->
+		<div class="hero grid min-h-svh w-fit grid-rows-[1fr_auto_1fr] text-6xl sm:text-8xl lg:text-[9rem]">
+			<div class="row-start-2">
+				<!-- Stacked title; tight line height keeps the two words together as one block -->
+				<h1 class="font-bold leading-[0.95] tracking-tight">
+					<span class="block">Data</span>
+					<span class="block text-accent">Island</span>
+				</h1>
 
-			<!-- Indent by one title character so the sentence starts under the first "a" of Data -->
-			<div class="indent">
-				<p class="mt-8 text-base whitespace-nowrap text-accent sm:text-lg md:text-xl lg:text-2xl">
-					We're a group of passionate{' '}
-					<span id="rotator" class="rotator font-semibold text-ink" aria-hidden="true">
-						{words.map((w, i) => <span class:list={['word', { 'is-active': i === 0 }]}>{w}</span>)}
-					</span>
-					<span class="sr-only">{words.slice(0, -1).join(', ')} and {words.at(-1)}</span>
-				</p>
+				<!-- Optical nudge (in title-size em) so the text lines up with the D's stroke, not its box -->
+				<div class="pl-[0.055em]">
+					<p class="mt-8 text-base whitespace-nowrap text-accent sm:text-lg md:text-xl lg:text-2xl">
+						We're a group of passionate{' '}
+						<span id="rotator" class="rotator font-semibold text-ink" aria-hidden="true">
+							{words.map((w, i) => <span class:list={['word', { 'is-active': i === 0 }]}>{w}</span>)}
+						</span>
+						<span class="sr-only">{words.slice(0, -1).join(', ')} and {words.at(-1)}</span>
+					</p>
+				</div>
 			</div>
+
+			<footer class="row-start-3 self-end pb-16 pl-[0.055em]">
+				<a href={`mailto:${email}`} class="text-sm text-ink/60 hover:text-ink">{email}</a>
+			</footer>
 		</div>
 	</main>
-
-	<footer class="fixed inset-x-0 bottom-0 pb-16 text-center text-sm text-ink/60">
-		<a href={`mailto:${email}`} class="hover:text-ink">{email}</a>
-	</footer>
 </Layout>
 
 <style>
-	/* One title character, minus the title's tight letter-spacing (-0.025em) */
-	.indent {
-		padding-left: calc(1ch - 0.025em);
-	}
-
 	/* All words sit in the same grid cell; only the active one is visible. */
 	.rotator {
 		display: inline-grid;

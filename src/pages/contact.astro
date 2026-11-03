@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Web3Forms access key: get a free one at https://web3forms.com (enter hello@dataisland.co).
+// It's safe to keep in the page; it only lets people send messages to that address.
+const WEB3FORMS_ACCESS_KEY = 'a2ec3a47-0849-4442-a5e7-a3158898e24e';
+
+const field =
+	'mt-2 block w-full rounded-lg border border-ink/20 bg-card px-4 py-3 text-ink placeholder:text-ink/40 focus:border-accent focus:ring-2 focus:ring-accent/30 focus:outline-none';
+---
+
+<Layout title="Get in touch | Data Island">
+	<main class="mx-auto max-w-2xl px-6 pt-40 pb-24">
+		<h1 class="text-4xl font-bold tracking-tight sm:text-6xl">Get in touch</h1>
+		<p class="mt-6 text-base text-accent sm:text-lg">
+			Tell us a bit about what you're working on and we'll get back to you soon.
+		</p>
+
+		<form id="contact-form" action="https://api.web3forms.com/submit" method="POST" class="mt-12 space-y-6">
+			<input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
+			<input type="hidden" name="subject" value="New enquiry from dataisland.co" />
+			<input type="hidden" name="from_name" value="Data Island website" />
+			<!-- Spam trap: hidden from people, bots tick it -->
+			<input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+
+			<label class="block">
+				<span class="text-sm font-semibold">Name</span>
+				<input type="text" name="name" required autocomplete="name" class={field} />
+			</label>
+
+			<label class="block">
+				<span class="text-sm font-semibold">Email</span>
+				<input type="email" name="email" required autocomplete="email" class={field} />
+			</label>
+
+			<label class="block">
+				<span class="text-sm font-semibold">Message</span>
+				<textarea name="message" required rows="6" class={field}></textarea>
+			</label>
+
+			<div class="flex flex-wrap items-center gap-4">
+				<button
+					type="submit"
+					class="cursor-pointer text-lg font-bold text-ink transition-colors sm:text-xl hover:text-ink/60 focus-visible:underline focus-visible:underline-offset-4 focus-visible:outline-none disabled:cursor-default disabled:text-ink/40"
+				>
+					Send message
+				</button>
+				<p id="form-status" class="text-sm" role="status" aria-live="polite"></p>
+			</div>
+		</form>
+	</main>
+</Layout>
+
+<script>
+	// Submit in the background so visitors stay on the page and see a message.
+	// Without JavaScript the form still works and Web3Forms shows its own thank-you page.
+	const form = document.getElementById('contact-form') as HTMLFormElement | null;
+	const status = document.getElementById('form-status');
+
+	form?.addEventListener('submit', async (event) => {
+		event.preventDefault();
+		const button = form.querySelector('button');
+		if (!status || !button) return;
+
+		button.disabled = true;
+		status.className = 'text-sm text-accent';
+		status.textContent = 'Sending…';
+
+		try {
+			const response = await fetch(form.action, {
+				method: 'POST',
+				headers: { Accept: 'application/json' },
+				body: new FormData(form),
+			});
+			const result = await response.json();
+			if (!response.ok || !result.success) throw new Error(result.message);
+
+			form.reset();
+			status.className = 'text-sm font-semibold text-ink';
+			status.textContent = "Thanks! We'll be in touch soon.";
+		} catch {
+			status.className = 'text-sm font-semibold text-red-700';
+			status.textContent = 'Something went wrong. Please email hello@dataisland.co instead.';
+		} finally {
+			button.disabled = false;
+		}
+	});
+</script>

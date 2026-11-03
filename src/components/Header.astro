@@ -1,0 +1,33 @@
+---
+const links = [
+	{ href: '/', label: 'Home' },
+	{ href: '/about', label: 'About' },
+	{ href: '/contact', label: 'Contact' },
+];
+
+// Highlight the link for the page we're on (ignore any trailing slash)
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header class="fixed inset-x-0 top-0 z-10">
+	<nav class="flex justify-end gap-6 px-6 py-6 text-sm sm:gap-8 sm:px-10 sm:text-base">
+		{
+			links.map(({ href, label }) => {
+				const active = current === href;
+				return (
+					<a
+						href={href}
+						aria-current={active ? 'page' : undefined}
+						class:list={[
+							'transition-colors hover:text-ink',
+							// Current page is full black; others are faded (60% keeps readable contrast)
+							active ? 'font-semibold text-ink' : 'text-ink/60',
+						]}
+					>
+						{label}
+					</a>
+				);
+			})
+		}
+	</nav>
+</header>
