@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  /* Coding-style font for the whole site */
+  --font-sans: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Data Island palette (light blue). Swap these values to retheme the site. */
+  --color-page: #c4e5fb;         /* page background */
+  --color-tint: #b2dcf9;         /* alternate section background */
+  --color-card: #e3f3fe;         /* service cards */
+  --color-ink: #000000;          /* text (secondary text uses ink at lower opacity) */
+  --color-accent: #2e3f59;       /* "Island" and the sentence lead-in */
+  --color-button: #000000;       /* primary button */
+  --color-button-hover: #1f2d3a; /* primary button hover */
+  --color-button-ink: #ffffff;   /* primary button text */
+
+  /* Previous dark pastel blue theme:
+     page #34537a · tint #304c70 · card #3e6190 · ink #ffffff
+     accent #c3d7f0 · button #c3d7f0 · button-hover #e3edf9 · button-ink #2c4566 */
+}

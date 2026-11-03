@@ -1,0 +1,105 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const words = ['builders', 'data engineers', 'technologists', 'analytics leaders'];
+const email = 'hello@dataisland.co';
+---
+
+<Layout>
+	<main class="flex min-h-svh items-center justify-center px-6">
+		<!-- Wrapper uses the title's font size so 1ch = one title character -->
+		<div class="hero w-fit text-5xl sm:text-8xl lg:text-9xl">
+			<h1 class="font-bold tracking-tight">
+				Data <span class="text-accent">Island</span>
+			</h1>
+
+			<!-- Indent by one title character so the sentence starts under the first "a" of Data -->
+			<div class="indent">
+				<p class="mt-8 text-base whitespace-nowrap text-accent sm:text-lg md:text-xl lg:text-2xl">
+					We're a group of passionate{' '}
+					<span id="rotator" class="rotator font-semibold text-ink" aria-hidden="true">
+						{words.map((w, i) => <span class:list={['word', { 'is-active': i === 0 }]}>{w}</span>)}
+					</span>
+					<span class="sr-only">{words.slice(0, -1).join(', ')} and {words.at(-1)}</span>
+				</p>
+			</div>
+		</div>
+	</main>
+
+	<footer class="fixed inset-x-0 bottom-0 pb-16 text-center text-sm text-ink/60">
+		<a href={`mailto:${email}`} class="hover:text-ink">{email}</a>
+	</footer>
+</Layout>
+
+<style>
+	/* One title character, minus the title's tight letter-spacing (-0.025em) */
+	.indent {
+		padding-left: calc(1ch - 0.025em);
+	}
+
+	/* All words sit in the same grid cell; only the active one is visible. */
+	.rotator {
+		display: inline-grid;
+		/* clip-path (not overflow) keeps the word on the same baseline as the sentence */
+		clip-path: inset(0);
+	}
+
+	.word {
+		grid-area: 1 / 1;
+		justify-self: start;
+		white-space: nowrap;
+		opacity: 0;
+		transform: translateY(100%);
+		transition:
+			transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+			opacity 0.5s ease;
+	}
+
+	.word.is-active {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.word.is-leaving {
+		opacity: 0;
+		transform: translateY(-100%);
+	}
+
+	/* On phones the sentence is too long for one line, so the word gets its own line */
+	@media (max-width: 639px) {
+		.rotator {
+			display: grid;
+			margin-top: 0.25rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.word {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const rotator = document.getElementById('rotator');
+	const words = rotator ? Array.from(rotator.querySelectorAll<HTMLElement>('.word')) : [];
+
+	if (rotator && words.length > 1) {
+		let current = 0;
+
+		setInterval(() => {
+			const prev = words[current];
+			prev.classList.replace('is-active', 'is-leaving');
+
+			current = (current + 1) % words.length;
+			const next = words[current];
+
+			// Snap the incoming word back below the line without animating, then slide it up.
+			next.style.transition = 'none';
+			next.classList.remove('is-leaving');
+			void next.offsetWidth;
+			next.style.transition = '';
+			next.classList.add('is-active');
+		}, 2500);
+	}
+</script>
